@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script type="text/javascript" src="resources/vendor/angular.min.js"></script>
+<script type="text/javascript" src="resources/vendor/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="resources/app/main.js"></script>
+<script type="text/javascript"
+	src="resources/app/controllers/usuarioController.js"></script>
+</head>
+<body ng-app="myApp">
+	<h1>Test</h1>
+	<div ng-controller="UsuarioController">{{ greeting }}</div>
+
+
+	<button id="btn-post">Start</button>
+
+	<script type="text/javascript">
+	
+	var notificationBaseURL = "http://localhost:8080/test-jersey-2/"; //The URL Where your services are hosted
+	
+
+
+			var eventSource = new EventSource(notificationBaseURL + "services/testSSE");
+	
+			console.log(eventSource);
+
+			eventSource.onmessage = function(event) {
+
+				//document.getElementById('foo').innerHTML = event.data;
+				
+				console.log('event', event);
+
+			};
+			
+			eventSource.onerror=function(event)
+			{
+				console.log("error [" + source.readyState + "]");
+			};
+			
+			eventSource.onopen = function(event){
+			    console.log("eventsource opened!");
+			};
+
+
+	
+	if(typeof(EventSource) !== "undefined") {
+	    console.log('tem suporte')
+	} else {
+		console.log('nao tem suporte')
+	}
+		
+		/*
+		function listenAllEvents() {
+			if (typeof (EventSource) !== "undefined") {
+
+				var source = new EventSource(notificationBaseURL + "services/testSSE");
+				source.onmessage = notifyEvent;
+			} else {
+				console.log("Sorry no event data sent - ");
+			}
+		}
+
+		function notifyEvent(event) {
+			var responseJson = JSON.parse(event.data);
+			alert("... Notification Received ...");
+		}
+		
+		listenAllEvents();*/
+		
+		$('#btn-post').click(function() {
+			$.ajax({
+				type: 'post',
+				url: notificationBaseURL + 'services/testSSE',
+				'contentType': 'text/plain',
+				data: 'Oi Kelve'
+			}).done(function(data) {
+				console.log('ok');
+				console.log(data);
+			}).fail(function(data) {
+				console.log('error');
+			});
+		});
+	</script>
+</body>
+</html>
